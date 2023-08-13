@@ -4,15 +4,29 @@ const { Product, Category, Tag, ProductTag } = require('../../models');
 // The `/api/products` endpoint
 
 // get all products
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
+  // Product.findAll().then((productData) => {
+  //   res.json(productData);
+  // });
+  const product = await Product.findAll({
+    include: [{ model: Tag }, { model: Category }]
+  })
+  res.status(200).json(product)
 });
 
 // get one product
-router.get('/:id', (req, res) => {
+router.get('/:id', async(req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
+  try{
+    const product = await Product.findByPk(req.params.id,{
+      include: [{ model: Tag }, { model: Category }]
+    })
+    res.status(200).json(product)
+  }catch(error){console.error(error)}
+  
 });
 
 // create new product
@@ -39,6 +53,7 @@ router.post('/', (req, res) => {
       }
       // if no product tags, just respond
       res.status(200).json(product);
+      console.log("data is here")
     })
     .then((productTagIds) => res.status(200).json(productTagIds))
     .catch((err) => {
@@ -91,6 +106,18 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   // delete one product by its `id` value
+  
+    // Looks for the books based on isbn given in the request parameters and deletes the instance from the database
+  Product.destroy({
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((deletedBook) => {
+       res.json(deletedBook);
+    })
+    .catch((err) => res.json(err));
+  
 });
 
 module.exports = router;

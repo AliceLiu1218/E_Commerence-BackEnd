@@ -29,8 +29,14 @@ const productData = [
     product_name: 'Cargo Shorts',
     price: 29.99,
     stock: 22,
-    category_id: 2,
+    category_id: 4,
   },
+  {
+    product_name: 'red shirt',
+    price: 29.99,
+    stock: 22,
+    category_id: 2,
+  }
 ];
 
 const seedProducts = () => Product.bulkCreate(productData);
